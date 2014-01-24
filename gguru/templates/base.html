@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0-wip/css/bootstrap.min.css">
+        <title>Guide-Guru</title>
+
+        <!-- jQuery и Bootstrap -->
+        <script src="http://code.jquery.com/jquery.js"></script>
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+        <!-- Ангулар -->
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.2/angular.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.2/angular-sanitize.min.js"></script>
+
+        <!-- Underscore. Используется на странице листинга поселков -->
+        <script src="http://underscorejs.org/underscore.js"></script>
+
+        <!-- Настройки этого ангулар-приложения -->
+        <script src="{{ STATIC_URL }}js/gg-ang-app.js"></script>
+
+        <!-- Стили сайта -->
+        <style>
+            body {
+                padding-top: 70px;
+            }
+        </style>
+
+        {% block add_to_head %}
+        {% endblock %}
+
+    </head>
+    <body ng-app="myNgApp">
+
+        <!-- Главное меню -->
+        <div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+
+            <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Guide-Guru</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li {% block groups_menu_active %}{% endblock %}><a href="{% url 'gguru.views.groups' %}">Группы</a></li>
+                    <li {% block members_menu_active %}{% endblock %}><a href="{% url 'gguru.views.members' %}">Участники</a></li>
+                    <li {% block users_menu_active %}{% endblock %}><a href="{% url 'gguru.views.users' %}">Пользователи</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><span style="display: block; line-height: 20px; padding-top: 15px; padding-bottom: 15px; color: #666;">{{ user.username }}</span></li>
+                    <li><a href="{% url 'gguru.views.logout' %}">Выход</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+            </div>
+
+        </div>
+
+        <!-- Общий лейаут через bootstrap -->
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+
+                    {% block page_main_column %}
+
+                    {% endblock %}
+
+                </div>
+            </div>
+        </div>
+
+
+    {% block add_to_footer %}
+
+        <!-- Текстовое поле ввода -->
+        <script type="text/javascript" src="{{ STATIC_URL }}js/gg-text-input-form-field.js"></script>
+
+        <!-- Кнопки и сообщение от сервера под формой -->
+        <script type="text/javascript" src="{{ STATIC_URL }}js/gg-model-operations.js"></script>
+
+        <!-- Список Радио -->
+        <script type="text/javascript" src="{{ STATIC_URL }}js/gg-radio-list-form-field.js"></script>
+
+    {% endblock %}
+
+    </body>
+</html>

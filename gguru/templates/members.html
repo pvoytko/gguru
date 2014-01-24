@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load gg_json_filter %}
+
+{% block members_menu_active %}class="active"{% endblock %}
+
+{% block page_main_column %}
+
+    <div>
+
+        <script>
+
+
+            function ObjectsCtrl($scope){
+
+                $scope.members = {{ members | gg_json_filter | safe }};
+
+            }
+
+        </script>
+
+        <div ng-controller="ObjectsCtrl">
+
+            <a class="btn btn-info pull-right" href="add/">Добавить участника</a>
+            <!-- Таблица -->
+            <table class="table table-stripped table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>ФИО</th>
+                        <th>ДР</th>
+                        <th>Группа</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody ng-cloak>
+                    <tr ng-repeat="o in members">
+                        <td>{$ o.id $}</td>
+                        <td>{$ o.fio $}</td>
+                        <td>{$ o.dr $}</td>
+                        <td>{$ o.group_name $}</td>
+                        <td>
+                            <a href="edit/{$ o.id $}/" style="color: black; text-decoration: underline;">
+                                редактировать
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load gg_json_filter %}
+
+{% block groups_menu_active %}class="active"{% endblock %}
+
+{% block page_main_column %}
+
+    {% include 'gg_include_item_header.html' %}
+
+    <script>
+
+        function ObjectEditFormCtrl($scope, $http) {
+
+            // Инициализуем поля модели предоставленными данными
+            // Сперва очищаем от старых данных.
+            $scope.init = function(initialData){
+                $scope.model = {};
+                for(p in initialData){
+                    $scope.model[p] = initialData[p];
+                }
+            };
+
+            // Инициализация данными модели (для случая когда форма редактирования)
+            $scope.init({{ model | gg_json_filter | safe }});
+
+            // Справочники
+            $scope.placeTypeChoices = {{ placeTypeChoices | gg_json_filter | safe }};
+            $scope.shipChoices = {{ shipChoices | gg_json_filter | safe }};
+        }
+
+    </script>
+
+    <div id="objectForm" ng-controller="ObjectEditFormCtrl">
+
+        <form class="form-horizontal" role="form" ng-cloak>
+
+            {% ifequal pageType 'edit' %}
+
+                <!-- ID объекта -->
+                <div class="form-group">
+                    <label class="col-lg-2 control-label" style="text-align: left;">ID группы</label>
+                    <div class="col-lg-4">
+                        <p class="form-control-static">{$ model.id $}</p>
+                    </div>
+                </div>
+
+            {% endifequal %}
+
+            <!-- № заявки -->
+            <gg-text-input-form-field label="Номер заявки" model="model.req_number" size="4"></gg-text-input-form-field>
+
+            <!-- Дата начала -->
+            <gg-text-input-form-field label="Дата начала" model="model.date_begin" size="4"></gg-text-input-form-field>
+
+            <!-- Дата окончания -->
+            <gg-text-input-form-field label="Дата окончания" model="model.date_end" size="4"></gg-text-input-form-field>
+
+            <!-- Тип места встречи -->
+            <gg-radio-list-form-field label="Тип места встречи" model="model.place_type" items="placeTypeChoices"></gg-radio-list-form-field>
+
+            <!-- Корабль -->
+            <div class="form-group" ng-show="model.place_type == 'ship'">
+                <label class="col-lg-2 control-label" style="text-align: left;">Корабль для встречи</label>
+                <div class="col-lg-4">
+                    <select class="form-control" ng-model="model.ship" ng-options="s.id as s.text for s in shipChoices">
+                    </select>
+                </div>
+            </div>
+
+            <!-- Отель -->
+            <gg-text-input-form-field label="Отель для встречи" model="model.hotel" size="4" ng-show="model.place_type == 'hotel'"></gg-text-input-form-field>
+
+            <!-- Иное -->
+            <gg-text-input-form-field label="Место встречи" model="model.other_place" size="4" ng-show="model.place_type == 'other'"></gg-text-input-form-field>
+
+            <!-- Кнопки и сообщение от сервера под формой -->
+            <gg-model-operations mode="{{ pageType }}" model="model" operations-url="{% url 'gguru.views.groups_cud_ajax' %}" success-url="{% url 'gguru.views.groups' %}" />
+
+        </form>
+
+    </div>
+
+{% endblock %}

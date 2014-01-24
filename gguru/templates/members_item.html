@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load gg_json_filter %}
+
+{% block members_menu_active %}class="active"{% endblock %}
+
+{% block page_main_column %}
+
+    {% include 'gg_include_item_header.html' %}
+
+    <script>
+
+        function ObjectEditFormCtrl($scope, $http) {
+
+            // Инициализуем поля модели предоставленными данными
+            // Сперва очищаем от старых данных.
+            $scope.init = function(initialData){
+                $scope.model = {};
+                for(p in initialData){
+                    $scope.model[p] = initialData[p];
+                }
+            };
+
+            // Инициализация данными модели (для случая когда форма редактирования)
+            $scope.init({{ model | gg_json_filter | safe }});
+
+            // Справочники
+            $scope.groups = {{ groups | gg_json_filter | safe }};
+        }
+
+    </script>
+
+    <div id="objectForm" ng-controller="ObjectEditFormCtrl">
+
+        <form class="form-horizontal" role="form" ng-cloak>
+
+            {% ifequal pageType 'edit' %}
+
+                <!-- ID объекта -->
+                <div class="form-group">
+                    <label class="col-lg-2 control-label" style="text-align: left;">ID участника</label>
+                    <div class="col-lg-4">
+                        <p class="form-control-static">{$ model.id $}</p>
+                    </div>
+                </div>
+
+            {% endifequal %}
+
+            <!-- Группа -->
+            {$ model.group $}
+            <div class="form-group">
+                <label class="col-lg-2 control-label" style="text-align: left;">Группа</label>
+                <div class="col-lg-4">
+                    <select class="form-control" ng-model="model.group" ng-options="g.id as (g.req_number + ' ' + g.place_descr) for g in groups">
+                    </select>
+                </div>
+            </div>
+
+            <!-- ФИО -->
+            <gg-text-input-form-field label="ФИО" model="model.fio" size="6"></gg-text-input-form-field>
+
+            <!-- Гражд -->
+            <gg-text-input-form-field label="Гражданство" model="model.grazd" size="3"></gg-text-input-form-field>
+
+            <!-- ДР -->
+            <gg-text-input-form-field label="ДР" model="model.dr" size="3"></gg-text-input-form-field>
+
+            <!-- Пасп № -->
+            <gg-text-input-form-field label="№ паспорта" model="model.pasp_nom" size="3"></gg-text-input-form-field>
+
+            <!-- Пасп срок-->
+            <gg-text-input-form-field label="Срок действия паспорта" model="model.pasp_srok" size="3"></gg-text-input-form-field>
+
+            <!-- Кнопки и сообщение от сервера под формой -->
+            <gg-model-operations mode="{{ pageType }}" model="model" operations-url="{% url 'gguru.views.members_cud_ajax' %}" success-url="{% url 'gguru.views.members' %}" />
+
+        </form>
+
+    </div>
+
+{% endblock %}

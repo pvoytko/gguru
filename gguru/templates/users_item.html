@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load gg_json_filter %}
+
+{% block users_menu_active %}class="active"{% endblock %}
+
+{% block page_main_column %}
+
+    {% include 'gg_include_item_header.html' %}
+
+    <script>
+
+        function ObjectEditFormCtrl($scope, $http) {
+
+            // Инициализуем поля модели предоставленными данными
+            // Сперва очищаем от старых данных.
+            $scope.init = function(initialData){
+                $scope.model = {};
+                for(p in initialData){
+                    $scope.model[p] = initialData[p];
+                }
+            };
+
+            // Инициализация данными модели (для случая когда форма редактирования)
+            $scope.init({{ model | gg_json_filter | safe }});
+        }
+
+    </script>
+
+    <div id="objectForm" ng-controller="ObjectEditFormCtrl">
+
+        <form class="form-horizontal" role="form" ng-cloak>
+
+            {% ifequal pageType 'edit' %}
+
+                <!-- ID объекта -->
+                <div class="form-group">
+                    <label class="col-lg-2 control-label" style="text-align: left;">ID пользователя</label>
+                    <div class="col-lg-4">
+                        <p class="form-control-static">{$ model.id $}</p>
+                    </div>
+                </div>
+
+            {% endifequal %}
+
+            <!-- Название -->
+            <gg-text-input-form-field label="Эл. почта" model="model.email" size="4"></gg-text-input-form-field>
+
+            <!-- Пароль -->
+            <gg-text-input-form-field label="Пароль" model="model.password" size="4"></gg-text-input-form-field>
+
+            <!-- Кнопки и сообщение от сервера под формой -->
+            <gg-model-operations mode="{{ pageType }}" model="model" operations-url="{% url 'gguru.views.users_cud_ajax' %}" success-url="{% url 'gguru.views.users' %}" />
+
+        </form>
+
+    </div>
+
+{% endblock %}
