@@ -25,6 +25,8 @@
 
             // Справочники
             $scope.groups = {{ groups | gg_json_filter | safe }};
+
+
         }
 
     </script>
@@ -46,11 +48,10 @@
             {% endifequal %}
 
             <!-- Группа -->
-            {$ model.group $}
             <div class="form-group">
                 <label class="col-lg-2 control-label" style="text-align: left;">Группа</label>
                 <div class="col-lg-4">
-                    <select class="form-control" ng-model="model.group" ng-options="g.id as (g.req_number + ' ' + g.place_descr) for g in groups">
+                    <select class="form-control" ng-model="model.group" ng-options="g.id as ('№ ' + g.req_number + ' ' + g.place_descr) for g in groups">
                     </select>
                 </div>
             </div>
